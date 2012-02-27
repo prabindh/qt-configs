@@ -1,0 +1,11 @@
+--- ./src/plugins/gfxdrivers/powervr/QWSWSEGL/pvrqwswsegl_orig.c	2012-02-27 18:53:22.919285167 +0530
++++ ./src/plugins/gfxdrivers/powervr/QWSWSEGL/pvrqwswsegl.c	2012-02-25 11:26:47.131221091 +0530
+@@ -39,7 +39,7 @@
+ **
+ ****************************************************************************/
+ 
+-#include <GLES/eglplatform.h>
++#include <EGL/eglplatform.h>
+ #include <wsegl.h>
+ #include <pvr2d.h>
+ #include <string.h>

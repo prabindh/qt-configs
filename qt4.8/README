@@ -1,0 +1,10 @@
+1. Apply the 001, 002 patches one after another similar to
+
+patch -p1 < 001_wsegl2.patch
+
+2. Use the qmake.conf provided - modify as required
+
+3. ./configure using config.specs provided (replace linux-TIarmv7-sgx-gst-g++ with your own)
+
+./configure -prefix /home1/prabu/arm-qt/test_install-gstrmr -embedded arm -platform qws/linux-x86-g++ -xplatform qws/linux-TIarmv7-sgx-gst-g++ -depths 16,24,32 -no-mmx -no-3dnow -no-sse -no-sse2 -no-glib -no-cups -no-largefile -no-accessibility -no-openssl -no-gtkstyle -qt-mouse-pc -qt-mouse-linuxtp -qt-mouse-linuxinput -qt-mouse-tslib -plugin-mouse-linuxtp -plugin-mouse-pc -plugin-gfx-powervr -fast -D QT_NO_QWS_CURSOR -D QT_QWS_CLIENTBLIT -opengl es2 -qt-gfx-linuxfb -no-webkit -verbose -confirm-license
+
