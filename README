@@ -1,0 +1,2 @@
+This repo contains information on Qt configuration information for building with SGX on TI platforms - out of tree (ie, standalone). It is still preferred to build-in-tree with distributions like Angstrom, Ubuntu etc 
+

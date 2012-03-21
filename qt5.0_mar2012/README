@@ -1,0 +1,12 @@
+Copy the directory linux-TIarmv7-sgx-gst-g++ into <QT5DIR>/qtbase/mkspecs/ folder.
+
+
+cd <QT5DIR>/qtbase/
+
+export PATH=<TOOLCHAINPATH>:$PATH
+export QTDIR=<QT5DIR>
+
+Use the below configuration to build the configuration and generate Makefiles, then perform Make
+
+./configure -prefix /home1/prabu/qt5_install -release -make libs -xplatform linux-TIarmv7-sgx-gst-g++ -opengl es2 -confirm-license -opensource -no-xcb -no-wayland -glib -gstreamer -verbose
+
