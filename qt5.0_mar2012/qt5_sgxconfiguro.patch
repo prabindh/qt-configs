@@ -1,0 +1,35 @@
+--- configure.orig	2012-04-06 20:00:13.780936162 +0530
++++ configure	2012-04-06 23:36:20.320933191 +0530
+@@ -4431,6 +4431,16 @@ elif [ "$CFG_OPENGL" = "es2" ]; then
+         QMakeVar set QMAKE_LIBS_OPENGL_ES2 "$QMAKE_LIBS_OPENGL_ES2"
+     fi
+ 
++    if [ -n "$PKG_CONFIG" ] && $PKG_CONFIG --exists sgx-null-gles2 2>/dev/null; then
++        QMAKE_INCDIR_OPENGL_ES2=`$PKG_CONFIG --cflags-only-I sgx-null-gles2 2>/dev/null | sed -e 's,^-I,,g' -e 's, -I, ,g'`
++        QMAKE_LIBDIR_OPENGL_ES2=`$PKG_CONFIG --libs-only-L sgx-null-gles2 2>/dev/null | sed -e 's,^-L,,g' -e 's, -L, ,g'`
++        QMAKE_LIBS_OPENGL_ES2=`$PKG_CONFIG --libs sgx-null-gles2 2>/dev/null`
++        QMAKE_CFLAGS_OPENGL_ES2=`$PKG_CONFIG --cflags sgx-null-gles2 2>/dev/null`
++        QMakeVar set QMAKE_INCDIR_OPENGL_ES2 "$QMAKE_INCDIR_OPENGL_ES2"
++        QMakeVar set QMAKE_LIBDIR_OPENGL_ES2 "$QMAKE_LIBDIR_OPENGL_ES2"
++        QMakeVar set QMAKE_LIBS_OPENGL_ES2 "$QMAKE_LIBS_OPENGL_ES2"
++    fi
++
+     "$unixtests/compile.test" "$XQMAKESPEC" "$QMAKE_CONFIG" $OPT_VERBOSE "$relpath" "$outpath" config.tests/unix/opengles2 "OpenGL ES 2.x" $L_FLAGS $I_FLAGS $l_FLAGS $QMAKE_LIBS_OPENGL_ES2 $QMAKE_CFLAGS_OPENGL_ES2
+     if [ $? != "0" ]; then
+         echo "The OpenGL ES 2.0 functionality test failed!"
+@@ -4598,6 +4608,15 @@ if [ "$CFG_EGL" != "no" ] && [ "$CFG_OPE
+         QMakeVar set QMAKE_INCDIR_EGL "$QMAKE_INCDIR_EGL"
+         QMakeVar set QMAKE_LIBS_EGL "$QMAKE_LIBS_EGL"
+     fi       # detect EGL support
++    if [ -n "$PKG_CONFIG" ] && $PKG_CONFIG --exists sgx-null-gles2 2>/dev/null; then
++        QMAKE_INCDIR_EGL=`$PKG_CONFIG --cflags-only-I sgx-null-gles2 2>/dev/null | sed -e 's,^-I,,g' -e 's, -I, ,g'`
++        QMAKE_LIBS_EGL=`$PKG_CONFIG --libs sgx-null-gles2 2>/dev/null`
++        QMAKE_CFLAGS_EGL=`$PKG_CONFIG --cflags sgx-null-gles2 2>/dev/null`
++        QMakeVar set QMAKE_INCDIR_EGL "$QMAKE_INCDIR_EGL"
++        QMakeVar set QMAKE_LIBS_EGL "$QMAKE_LIBS_EGL"
++    fi
++
++
+     if "$unixtests/compile.test" "$XQMAKESPEC" "$QMAKE_CONFIG" $OPT_VERBOSE "$relpath" "$outpath" "config.tests/qpa/egl" "EGL" $L_FLAGS $I_FLAGS $l_FLAGS $QMAKE_CFLAGS_EGL $QMAKE_LIBS_EGL; then
+         CFG_EGL=yes
+     elif [ "$CFG_EGL" = "yes" ]; then
