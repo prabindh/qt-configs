@@ -1,0 +1,18 @@
+Qt5 does not require any wsegl/pvr2d patch.
+
+If sgxconfiguro has been used, the provided configure sxript can be used instead of manually configuring with qmake.conf.
+
+Configuring Qt5 is fairly easy - and can be done without messing with creating new mkspecs, if the below are met:
+
+- a linaro toolchain 
+- sgxconfiguro is used (https://github.com/prabindh/sgxconfiguro), and 
+- force-pkg-config is used
+
+If this does not seem comfortable, the tried and tested method of specifying all possible (and needed) paths in the qmake.conf (https://github.com/prabindh/qt-configs/tree/master/qt5.0_mar2012) can be employed. The below method adopts the first approach and uses the standard Qt5 supplied linux-arm-gnueabi-g++ mkspec without change
+
+$cd qtbase
+$export PATH=/opt/linaro/gcc-linaro-arm-linux-gnueabi-2012.03-20120326_linux/bin:/home/prabindh/work1/arm-qt5-tar/qt-everywhere-opensource-src-5.0.0/qtbase/bin:
+$export PKG_CONFIG=./x86-cross-ubuntu-pkg-config
+$./configure -prefix /home1/prabu/qt5_install -release -make libs -xplatform linux-arm-gnueabi-g++ -opengl es2 -confirm-license -opensource -no-xcb -no-wayland -force-pkg-config -make examples -make demos -verbose
+
+
