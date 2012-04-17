@@ -15,4 +15,8 @@ $export PATH=/opt/linaro/gcc-linaro-arm-linux-gnueabi-2012.03-20120326_linux/bin
 $export PKG_CONFIG=./x86-cross-ubuntu-pkg-config
 $./configure -prefix /home1/prabu/qt5_install -release -make libs -xplatform linux-arm-gnueabi-g++ -opengl es2 -confirm-license -opensource -no-xcb -no-wayland -force-pkg-config -make examples -make demos -verbose
 
+XCB build with SGX:
 
+For Xcb build use below configure options
+
+./configure -prefix /home1/prabu/qt5_xcb_install -release -make libs -xplatform linux-TIarmv7-sgx-g++ -opengl es2 -confirm-license -opensource -xcb -no-wayland -force-pkg-config -make examples -make demos -verbose
