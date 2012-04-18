@@ -20,3 +20,6 @@ XCB build with SGX:
 For Xcb build use below configure options
 
 ./configure -prefix /home1/prabu/qt5_xcb_install -release -make libs -xplatform linux-TIarmv7-sgx-g++ -opengl es2 -confirm-license -opensource -xcb -no-wayland -force-pkg-config -make examples -make demos -verbose
+
+
+The Qt5 configure script does not use pkg-config to detect presence of X11 (strange ?) so might need to provide the rootfs include path in qmake.conf
