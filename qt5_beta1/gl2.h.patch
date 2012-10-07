@@ -1,0 +1,10 @@
+--- gl2.h.prev	2012-10-07 21:03:36.611160567 +0530
++++ gl2.h	2012-10-07 21:01:10.630183100 +0530
+@@ -17,6 +17,7 @@ extern "C" {
+  *-----------------------------------------------------------------------*/
+ 
+ typedef void             GLvoid;
++typedef char GLchar; 
+ typedef unsigned int     GLenum;
+ typedef unsigned char    GLboolean;
+ typedef unsigned int     GLbitfield;

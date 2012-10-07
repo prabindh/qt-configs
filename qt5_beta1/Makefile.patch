@@ -1,0 +1,15 @@
+--- Makefile.orig	2012-10-07 23:24:09.602160560 +0530
++++ Makefile	2012-10-07 22:15:54.442168171 +0530
+@@ -51971,10 +51971,10 @@ compiler_clean: compiler_neon_compiler_c
+ 	$(CXX) -c -include .pch/release-shared/QtGui $(CXXFLAGS) $(INCPATH) -o .obj/release-shared/qstandarditemmodel.o itemmodels/qstandarditemmodel.cpp
+ 
+ .obj/release-shared/pixman-arm-neon-asm.o: ../3rdparty/pixman/pixman-arm-neon-asm.S ../3rdparty/pixman/pixman-arm-neon-asm.h
+-	$(CC) -c -include .pch/release-shared/QtGui $(CFLAGS) $(INCPATH) -o .obj/release-shared/pixman-arm-neon-asm.o ../3rdparty/pixman/pixman-arm-neon-asm.S
++	$(CC) -c $(CFLAGS) $(INCPATH) -o .obj/release-shared/pixman-arm-neon-asm.o ../3rdparty/pixman/pixman-arm-neon-asm.S
+ 
+ .obj/release-shared/qdrawhelper_neon_asm.o: painting/qdrawhelper_neon_asm.S 
+-	$(CC) -c -include .pch/release-shared/QtGui $(CFLAGS) $(INCPATH) -o .obj/release-shared/qdrawhelper_neon_asm.o painting/qdrawhelper_neon_asm.S
++	$(CC) -c $(CFLAGS) $(INCPATH) -o .obj/release-shared/qdrawhelper_neon_asm.o painting/qdrawhelper_neon_asm.S
+ 
+ .obj/release-shared/moc_qaccessible.o: .moc/release-shared/moc_qaccessible.cpp .pch/release-shared/QtGui.gch/c++
+ 	$(CXX) -c -include .pch/release-shared/QtGui $(CXXFLAGS) $(INCPATH) -o .obj/release-shared/moc_qaccessible.o .moc/release-shared/moc_qaccessible.cpp
