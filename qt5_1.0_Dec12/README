@@ -6,3 +6,65 @@ Configure Qt5 like below.
 
 ./configure -prefix /home1/prabu/qt5_install -release -make libs -xplatform linux-arm-gnueabi-ti-g++ -opengl es2 -confirm-license -opensource -icu -no-xcb -make examples -verbose
 
+
+Result of c successful onfigure should be as below (NEON, GLES2, ICU, linuxfb, eglfs enabled)
+
+Build ..................  libs examples
+Configuration ..........  cross_compile qpa largefile neon pcre  minimal-config small-config medium-config large-config full-config fontconfig libudev evdev xlib xrender linuxfb c++11 accessibility egl eglfs opengl opengles2 shared qpa clock-gettime clock-monotonic mremap getaddrinfo ipv6ifname getifaddrs inotify system-png png system-freetype system-zlib nis iconv dbus openssl rpath alsa icu concurrent audio-backend v8 v8snapshot release
+Debug .................. no
+C++11 support .......... yes
+pkg-config ............. yes
+QtDBus module .......... yes (run-time)
+QtConcurrent code ...... yes
+QtGui module ........... yes
+QtWidgets module ....... yes
+JavaScriptCore JIT ..... To be decided by JavaScriptCore
+QML debugging .......... yes
+PCH support ............ no
+iWMMXt support ......... no
+NEON support ........... yes
+IPv6 ifname support .... yes
+getaddrinfo support .... yes
+getifaddrs support ..... yes
+Accessibility .......... yes
+NIS support ............ yes
+//CUPS support ........... no
+Iconv support .......... yes
+Glib support ........... no
+GStreamer support ...... no
+PulseAudio support ..... no
+Large File support ..... yes
+GIF support ............ plugin
+JPEG support ........... plugin (qt)
+PNG support ............ yes (system)
+zlib support ........... system
+Session management ..... auto
+libudev support ........ yes
+Use system proxies ..... no
+OpenGL support ......... yes (OpenGL ES 2.x)
+OpenVG support ......... no
+XShape support ......... auto
+XVideo support ......... auto
+XSync support .......... auto
+Xinerama support ....... runtime
+Xcursor support ........ runtime
+Xfixes support ......... runtime
+Xrandr support ......... runtime
+Xi support ............. runtime
+Xi2 support ............ auto
+MIT-SHM support ........ auto
+FontConfig support ..... yes
+XKB Support ............ auto
+GTK theme support ...... no
+SQLite support ......... plugin (qt)
+OpenSSL support ........ yes (run-time)
+Alsa support ........... yes
+libICU support ......... yes
+PCRE support ........... qt
+Xcb support ............ no
+Xrender support ........ yes
+EGLFS support .......... yes
+DirectFB support ....... no
+LinuxFB support ........ yes
+KMS support ............ no
+
