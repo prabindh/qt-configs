@@ -1,0 +1,8 @@
+Configuring Qt5 final 1.0 (December 2012)
+
+Use the linux-arm-gnueabi-ti-g++ in this folder, and place it under qtbase/mkspecs. 
+
+Configure Qt5 like below.
+
+./configure -prefix /home1/prabu/qt5_install -release -make libs -xplatform linux-arm-gnueabi-ti-g++ -opengl es2 -confirm-license -opensource -icu -no-xcb -make examples -verbose
+
