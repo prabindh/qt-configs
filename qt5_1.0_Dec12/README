@@ -68,3 +68,10 @@ DirectFB support ....... no
 LinuxFB support ........ yes
 KMS support ............ no
 
+
+-----
+Building qtwebkit:
+
+- ICU support is required
+- For building QtTestBrowser, use the patch for qttestbrowser.cpp
+- For building qtwebkit-examples, qtxmlpatterns is to be built

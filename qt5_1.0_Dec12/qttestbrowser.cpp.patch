@@ -1,0 +1,23 @@
+--- qtwebkit/Tools/QtTestBrowser/qttestbrowser.cpp.orig	2013-01-06 19:34:23.802156225 +0530
++++ qtwebkit/Tools/QtTestBrowser/qttestbrowser.cpp	2013-01-06 19:33:51.609996587 +0530
+@@ -235,18 +235,20 @@ void LauncherApplication::handleUserOpti
+     }
+ 
+     if (args.contains("-webgl")) {
+         requiresGraphicsView("-webgl");
+         windowOptions.useWebGL = true;
+     }
+ #endif
+ 
++#if HAVE(QTTESTSUPPORT) 
+     if (args.contains("-use-test-fonts"))
+         WebKit::QtTestSupport::initializeTestFonts();
++#endif
+ 
+     if (args.contains("-print-loaded-urls"))
+         windowOptions.printLoadedUrls = true;
+ 
+     QString inspectorUrlArg("-inspector-url");
+     int inspectorUrlIndex = args.indexOf(inspectorUrlArg);
+     if (inspectorUrlIndex != -1)
+        windowOptions.inspectorUrl = takeOptionValue(&args, inspectorUrlIndex);
