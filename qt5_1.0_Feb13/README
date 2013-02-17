@@ -1,0 +1,7 @@
+https://bugreports.qt-project.org/browse/QTBUG-29729
+
+Refer to the above bug report for this temporary fix. All qtbase examples have been tested with this patch.
+
+- 16 Feb 2013, prabindh@yahoo.com
+
+
