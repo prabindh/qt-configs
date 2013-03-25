@@ -1,0 +1,23 @@
+--- qtslib.cpp.orig	2013-03-25 09:02:36.193880936 +0530
++++ qtslib.cpp	2013-03-25 09:07:59.579484454 +0530
+@@ -59,17 +59,19 @@ QT_BEGIN_NAMESPACE
+ 
+ QTsLibMouseHandler::QTsLibMouseHandler(const QString &key,
+                                                  const QString &specification)
+     : m_notify(0), m_x(0), m_y(0), m_pressed(0), m_rawMode(false)
+ {
+     qDebug() << "QTsLibMouseHandler" << key << specification;
+     setObjectName(QLatin1String("TSLib Mouse Handler"));
+ 
+-    QByteArray device = "/dev/input/event1";
++    QByteArray device = qgetenv("TSLIB_TSDEVICE");
++    if(device.isEmpty())
++       device = "/dev/input/event1";
+     if (specification.startsWith("/dev/"))
+         device = specification.toLocal8Bit();
+ 
+     m_dev = ts_open(device.constData(), 1);
+     if (!m_dev) {
+         qErrnoWarning(errno, "ts_open() failed");
+         return;
+     }
