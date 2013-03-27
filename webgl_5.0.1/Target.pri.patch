@@ -1,0 +1,23 @@
+--- qtwebkit/Source/WebCore/Target.pri.orig	2013-03-27 21:11:58.541265921 +0530
++++ qtwebkit/Source/WebCore/Target.pri	2013-03-27 21:13:13.041635353 +0530
+@@ -4092,16 +4092,20 @@ use?(GRAPHICS_SURFACE) {
+         INCLUDEPATH += /System/Library/Frameworks/CoreFoundation.framework/Headers
+     }
+     win32 {
+         SOURCES += platform/graphics/surfaces/win/GraphicsSurfaceWin.cpp
+     }
+     have?(XCOMPOSITE) {
+         SOURCES += platform/graphics/surfaces/qt/GraphicsSurfaceGLX.cpp
+     }
++    contains(QT_CONFIG, opengles2) {
++        SOURCES -= platform/graphics/surfaces/qt/GraphicsSurfaceGLX.cpp
++        SOURCES += platform/graphics/surfaces/qt/GraphicsSurfaceGL_NoX.cpp
++    }
+ }
+ 
+ build?(qttestsupport) {
+     HEADERS += platform/qt/QtTestSupport.h
+     SOURCES += platform/qt/QtTestSupport.cpp
+ }
+ 
+ ALL_IN_ONE_SOURCES += \

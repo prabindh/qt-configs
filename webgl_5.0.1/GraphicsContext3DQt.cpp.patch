@@ -1,0 +1,26 @@
+--- qtwebkit/Source/WebCore/platform/graphics/qt/GraphicsContext3DQt.cpp.orig	2013-03-27 19:57:16.935042840 +0530
++++ qtwebkit/Source/WebCore/platform/graphics/qt/GraphicsContext3DQt.cpp	2013-03-27 20:01:12.340210155 +0530
+@@ -388,21 +388,23 @@ GraphicsContext3D::GraphicsContext3D(Gra
+     , m_boundTexture0(0)
+     , m_multisampleFBO(0)
+     , m_multisampleDepthStencilBuffer(0)
+     , m_multisampleColorBuffer(0)
+     , m_private(adoptPtr(new GraphicsContext3DPrivate(this, hostWindow, renderStyle)))
+ {
+     validateAttributes();
+ 
++#if USE(GLX)
+     if (!m_private->m_surface) {
+         LOG_ERROR("GraphicsContext3D: QGLWidget initialization failed.");
+         m_private = nullptr;
+         return;
+     }
++#endif
+ 
+     static bool initialized = false;
+     static bool success = true;
+     if (!initialized) {
+         success = initializeOpenGLShims();
+         initialized = true;
+     }
+     if (!success) {

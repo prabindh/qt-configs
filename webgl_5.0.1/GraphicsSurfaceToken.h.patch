@@ -1,0 +1,33 @@
+--- qtwebkit/Source/WebCore/platform/graphics/surfaces/GraphicsSurfaceToken.h.orig	2013-03-27 21:17:23.162875633 +0530
++++ qtwebkit/Source/WebCore/platform/graphics/surfaces/GraphicsSurfaceToken.h	2013-03-27 21:19:04.995380584 +0530
+@@ -50,16 +50,30 @@ struct GraphicsSurfaceToken {
+     {
+         return frontBufferHandle != rhs.frontBufferHandle;
+     }
+ 
+     bool isValid() const
+     {
+         return frontBufferHandle;
+     }
++#elif PLATFORM(QT)
++    GraphicsSurfaceToken(uint32_t windowID = 0)
++        : frontBufferHandle(windowID)
++    { }
++
++    bool operator!=(const GraphicsSurfaceToken &rhs) const
++    {
++        return frontBufferHandle != rhs.frontBufferHandle;
++    }
++
++    bool isValid() const
++    {
++        return frontBufferHandle;
++    }
+ #endif
+ 
+ #if OS(DARWIN) || OS(WINDOWS)
+     GraphicsSurfaceToken(BufferHandle frontBuffer = 0, BufferHandle backBuffer = 0)
+         : frontBufferHandle(frontBuffer)
+         , backBufferHandle(backBuffer)
+     { }
+ 

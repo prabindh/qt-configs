@@ -1,0 +1,24 @@
+--- qtwebkit/Source/WebCore/platform/graphics/OpenGLShims.cpp.orig	2013-03-27 20:04:34.217211200 +0530
++++ qtwebkit/Source/WebCore/platform/graphics/OpenGLShims.cpp	2013-03-27 20:05:33.761506468 +0530
+@@ -35,17 +35,20 @@ OpenGLFunctionTable* openGLFunctionTable
+ {
+     static OpenGLFunctionTable table;
+     return &table;
+ }
+ 
+ #if PLATFORM(QT)
+ static void* getProcAddress(const char* procName)
+ {
+-    return reinterpret_cast<void*>(QOpenGLContext::currentContext()->getProcAddress(procName));
++    if(QOpenGLContext::currentContext())
++        return reinterpret_cast<void*>(QOpenGLContext::currentContext()->getProcAddress(procName));
++    else
++        return NULL;
+ }
+ #else
+ typedef void* (*glGetProcAddressType) (const char* procName);
+ static void* getProcAddress(const char* procName)
+ {
+     static bool initialized = false;
+     static glGetProcAddressType getProcAddressFunction = 0;
+ 

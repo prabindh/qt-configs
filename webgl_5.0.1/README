@@ -1,0 +1,19 @@
+Patches to enable WebGL support with EGLFS in Qt5.0.1
+
+Validation:
+
+WebGL tutorials at http://www.gpupowered.org/sand/launch2/, and html5test.com
+
+Known issues:
+
+- Qt configuration detection is really messy. Today the logic is as below, and will need to be cleaned up:
+
+    if opengles2 in QT_CONFIG, enable graphics_surface
+    if opengles2 in QT_CONFIG, remove GraphicsSurfaceGLX.cpp, and use NoX surface file.
+
+- Surface is actually not getting used in WebGL, so only a dummy file exists. This needs to be cleaned up.
+
+- EGLFS still needs patches that are not upstream. These are at, https://bugreports.qt-project.org/browse/QTBUG-29729
+
+- prabindh@yahoo.com, 2013
+
