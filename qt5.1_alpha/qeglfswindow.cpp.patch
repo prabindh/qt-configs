@@ -1,0 +1,47 @@
+--- qtbase/src/plugins/platforms/eglfs/qeglfswindow.cpp.orig	2013-04-16 23:25:33.412987451 +0530
++++ qtbase/src/plugins/platforms/eglfs/qeglfswindow.cpp	2013-04-16 23:21:48.295871140 +0530
+@@ -70,28 +70,44 @@ QEglFSWindow::~QEglFSWindow()
+     destroy();
+ }
+ 
+ void QEglFSWindow::create()
+ {
+     if (m_window)
+         return;
+ 
++    static EGLSurface __singleWindowSurface;
++    if(!QEglFSHooks::hooks()->hasCapability(QPlatformIntegration::Capability::MultipleWindows) && (__singleWindowSurface))
++    {
++        m_surface = __singleWindowSurface;
++#ifdef QEGL_EXTRA_DEBUG
++    qWarning("Surface recreate request, re-using %x\n", m_surface);
++#endif
++	return;
++    }
++
+     if (window()->type() == Qt::Desktop) {
+         QRect rect(QPoint(), QEglFSHooks::hooks()->screenSize());
+         QPlatformWindow::setGeometry(rect);
+         QWindowSystemInterface::handleGeometryChange(window(), rect);
+         return;
+     }
+ 
+     EGLDisplay display = (static_cast<QEglFSScreen *>(window()->screen()->handle()))->display();
+     QSurfaceFormat platformFormat = QEglFSHooks::hooks()->surfaceFormatFor(window()->requestedFormat());
+     m_config = QEglFSIntegration::chooseConfig(display, platformFormat);
+     m_format = q_glFormatFromConfig(display, m_config);
+     resetSurface();
++
++    if(!QEglFSHooks::hooks()->hasCapability(QPlatformIntegration::Capability::MultipleWindows))
++    {
++        __singleWindowSurface = m_surface;
++    }
++
+ }
+ 
+ void QEglFSWindow::invalidateSurface()
+ {
+     // Native surface has been deleted behind our backs
+     m_window = 0;
+     if (m_surface != 0) {
+         EGLDisplay display = (static_cast<QEglFSScreen *>(window()->screen()->handle()))->display();
