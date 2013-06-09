@@ -1,0 +1,101 @@
+--- qeglfsbackingstore.cpp.orig	2013-06-09 17:11:01.500092345 +0530
++++ qeglfsbackingstore.cpp	2013-06-09 18:58:52.280179201 +0530
+@@ -83,6 +83,8 @@ void QEglFSBackingStore::flush(QWindow *
+     qWarning("QEglBackingStore::flush %p", window);
+ #endif
+ 
++#define _TI_EGLFS
++#ifndef _TI_EGLFS
+     if (!m_program) {
+         static const char *textureVertexProgram =
+             "attribute highp vec2 vertexCoordEntry;\n"
+@@ -185,6 +187,89 @@ void QEglFSBackingStore::flush(QWindow *
+     if (QEglFSCursor *cursor = static_cast<QEglFSCursor *>(window->screen()->handle()->cursor()))
+         cursor->paintOnScreen();
+ 
++#else //_TI_EGLFS USED
++    #include "v3dfx_eglimage.h"
++    static int tiEglFsInitialised = 0;
++    const GLfloat textureCoordinates[] = {
++        0, 1,
++        1, 1,
++        1, 0,
++        0, 0
++    };
++	static TISGXStreamTexEGLIMAGE* texClass;
++	static TISGXStreamEGLIMAGEDevice* texDevice;
++
++    QRectF r = window->geometry();
++    QRectF sr = window->screen()->geometry();
++
++    GLfloat x1 = (r.left() / sr.width()) * 2 - 1;
++    GLfloat x2 = (r.right() / sr.width()) * 2 - 1;
++    GLfloat y1 = (r.top() / sr.height()) * 2 - 1;
++    GLfloat y2 = (r.bottom() / sr.height()) * 2 - 1;
++
++    const GLfloat vertexCoordinates[] = {
++        x1, y1,
++        x2, y1,
++        x2, y2,
++        x1, y2
++    };
++	const float matrixVal[16] = {
++		1.0, 0.0,0.0, 0.0,
++		0.0, 1.0, 0.0, 0.0,
++		0.0, 0.0, 1.0, 0.0,
++		0.0, 0.0, 0.0, 1.0
++		};
++	static EGLint eglAttributes[] = {
++		    EGL_GL_VIDEO_FOURCC_TI,      FOURCC_STR("YUYV"),
++		    EGL_GL_VIDEO_WIDTH_TI,       r.width(),
++		    EGL_GL_VIDEO_HEIGHT_TI,      r.height(),
++		    EGL_GL_VIDEO_BYTE_STRIDE_TI, r.width()*2,
++		    EGL_GL_VIDEO_BYTE_SIZE_TI,   r.width()*r.height()*2,
++		    // TODO: pick proper RGB flags..
++		    EGL_GL_VIDEO_YUV_FLAGS_TI,   EGLIMAGE_FLAGS_YUV_CONFORMANT_RANGE |
++		    EGLIMAGE_FLAGS_YUV_BT601,
++		    EGL_NONE
++	    };
++	eglimage_device_attributes m_deviceAttrib = {r.width(), r.height(), 2, 
++						r.width()*r.height()*2, 
++						PVRSRV_PIXEL_FORMAT_YUV420,
++						0, //to be initialised
++						eglAttributes, 1};
++
++
++	if(!tiEglFsInitialised)
++	{
++		deviceClass = new TISGXStreamEGLIMAGEDevice();
++		texClass = new TISGXStreamTexEGLIMAGE();
++		paArray[0] = m_image.constBits();
++		tempAttrib.egldisplay = eglGetCurrentDisplay();
++		deviceClass->init(&deviceAttrib, 0, paArray);
++		texClass->init(lastDeviceClass);
++		texClass->load_v_shader(NULL);
++		texClass->load_f_shader(NULL);
++		texClass->load_program();
++
++		m_vertexCoordEntry = texClass->get_attribute_location("inVertex");
++		m_textureCoordEntry = texClass->get_attribute_location("inTexCoord");
++		int matrixLocation = texClass->get_uniform_location("MVPMatrix");
++		glUniformMatrix4fv( matrixLocation, 1, GL_FALSE, matrixVal);
++
++		tiEglFsInitialised = 1;
++	}
++    texClass->use_program();
++    glEnableVertexAttribArray(m_vertexCoordEntry);
++    glEnableVertexAttribArray(m_textureCoordEntry);
++
++    glVertexAttribPointer(m_vertexCoordEntry, 2, GL_FLOAT, GL_FALSE, 0, vertexCoordinates);
++    glVertexAttribPointer(m_textureCoordEntry, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
++
++    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
++    texClass->release_program();
++    glDisableVertexAttribArray(m_vertexCoordEntry);
++    glDisableVertexAttribArray(m_textureCoordEntry);
++#endif //_TI_EGLFS
++
++
+     m_context->swapBuffers(window);
+ 
+     m_context->doneCurrent();

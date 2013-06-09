@@ -1,0 +1,30 @@
+--- eglfs.pri.orig	2013-06-09 19:06:34.262470038 +0530
++++ eglfs.pri	2013-06-09 19:12:09.232131074 +0530
+@@ -1,6 +1,6 @@
+ QT += core-private gui-private platformsupport-private
+ 
+-#DEFINES += QEGL_EXTRA_DEBUG
++DEFINES += QEGL_EXTRA_DEBUG
+ 
+ #Avoid X11 header collision
+ DEFINES += MESA_EGL_NO_X11_HEADERS
+@@ -25,10 +25,19 @@ HEADERS +=  $$PWD/qeglfsintegration.h \
+             $$PWD/qeglfshooks.h \
+             $$PWD/qeglfscontext.h
+ 
++#Prabu for v3dfx
++V3DFX_BASE_PATH = /home/prabindh/work1/v3dfx-base/
++HEADERS +=  $$V3DFX_BASE_PATH/api/include/v3dfx_eglimage.h \
++            $$V3DFX_BASE_PATH/api/include/v3dfxbase.h
++INCLUDEPATH += $$V3DFX_BASE_PATH/api/include/
++LIBS += -L$$V3DFX_BASE_PATH/api/build -lv3dfx_base.a
++
++
+ QMAKE_LFLAGS += $$QMAKE_LFLAGS_NOUNDEF
+ 
+ INCLUDEPATH += $$PWD
+ 
++
+ !isEmpty(EGLFS_PLATFORM_HOOKS_SOURCES) {
+     HEADERS += $$EGLFS_PLATFORM_HOOKS_HEADERS
+     SOURCES += $$EGLFS_PLATFORM_HOOKS_SOURCES
