@@ -1,21 +1,55 @@
 --- qeglfsbackingstore.cpp.orig	2013-06-09 17:11:01.500092345 +0530
-+++ qeglfsbackingstore.cpp	2013-06-09 18:58:52.280179201 +0530
-@@ -83,6 +83,8 @@ void QEglFSBackingStore::flush(QWindow *
++++ qeglfsbackingstore.cpp	2013-06-09 22:44:35.604460956 +0530
+@@ -44,16 +44,20 @@
+ #include "qeglfswindow.h"
+ 
+ #include <QtGui/QOpenGLContext>
+ #include <QtGui/QOpenGLPaintDevice>
+ #include <QtGui/QOpenGLShaderProgram>
+ 
+ #include <QtGui/QScreen>
+ 
++//Prabu
++#define _TI_EGLFS
++#include "v3dfx_eglimage.h"
++
+ QT_BEGIN_NAMESPACE
+ 
+ QEglFSBackingStore::QEglFSBackingStore(QWindow *window)
+     : QPlatformBackingStore(window)
+     , m_context(new QOpenGLContext)
+     , m_texture(0)
+     , m_program(0)
+ {
+@@ -78,16 +82,17 @@ void QEglFSBackingStore::flush(QWindow *
+     Q_UNUSED(offset);
+ 
+     makeCurrent();
+ 
+ #ifdef QEGL_EXTRA_DEBUG
      qWarning("QEglBackingStore::flush %p", window);
  #endif
  
-+#define _TI_EGLFS
 +#ifndef _TI_EGLFS
      if (!m_program) {
          static const char *textureVertexProgram =
              "attribute highp vec2 vertexCoordEntry;\n"
-@@ -185,6 +187,89 @@ void QEglFSBackingStore::flush(QWindow *
+             "attribute highp vec2 textureCoordEntry;\n"
+             "varying highp vec2 textureCoord;\n"
+             "void main() {\n"
+             "   textureCoord = textureCoordEntry;\n"
+             "   gl_Position = vec4(vertexCoordEntry, 0.0, 1.0);\n"
+@@ -180,16 +185,102 @@ void QEglFSBackingStore::flush(QWindow *
+     glBindTexture(GL_TEXTURE_2D, 0);
+     glDisableVertexAttribArray(m_vertexCoordEntry);
+     glDisableVertexAttribArray(m_textureCoordEntry);
+ 
+     // draw the cursor
      if (QEglFSCursor *cursor = static_cast<QEglFSCursor *>(window->screen()->handle()->cursor()))
          cursor->paintOnScreen();
  
 +#else //_TI_EGLFS USED
-+    #include "v3dfx_eglimage.h"
-+    static int tiEglFsInitialised = 0;
++    int m_tiEglFsInitialised = 0;
 +    const GLfloat textureCoordinates[] = {
 +        0, 1,
 +        1, 1,
@@ -23,7 +57,9 @@
 +        0, 0
 +    };
 +	static TISGXStreamTexEGLIMAGE* texClass;
-+	static TISGXStreamEGLIMAGEDevice* texDevice;
++	static TISGXStreamEGLIMAGEDevice* deviceClass;
++	unsigned long paArray[] = {0,0}; 
++	unsigned long freeArray[] = {0, 0, 0, 0};
 +
 +    QRectF r = window->geometry();
 +    QRectF sr = window->screen()->geometry();
@@ -45,42 +81,44 @@
 +		0.0, 0.0, 1.0, 0.0,
 +		0.0, 0.0, 0.0, 1.0
 +		};
++	int windowWidth = r.width();
++	int windowHeight = r.height();
 +	static EGLint eglAttributes[] = {
 +		    EGL_GL_VIDEO_FOURCC_TI,      FOURCC_STR("YUYV"),
-+		    EGL_GL_VIDEO_WIDTH_TI,       r.width(),
-+		    EGL_GL_VIDEO_HEIGHT_TI,      r.height(),
-+		    EGL_GL_VIDEO_BYTE_STRIDE_TI, r.width()*2,
-+		    EGL_GL_VIDEO_BYTE_SIZE_TI,   r.width()*r.height()*2,
++		    EGL_GL_VIDEO_WIDTH_TI,       windowWidth,
++		    EGL_GL_VIDEO_HEIGHT_TI,      windowHeight,
++		    EGL_GL_VIDEO_BYTE_STRIDE_TI, windowWidth*2,
++		    EGL_GL_VIDEO_BYTE_SIZE_TI,   windowWidth*windowHeight*2,
 +		    // TODO: pick proper RGB flags..
 +		    EGL_GL_VIDEO_YUV_FLAGS_TI,   EGLIMAGE_FLAGS_YUV_CONFORMANT_RANGE |
 +		    EGLIMAGE_FLAGS_YUV_BT601,
 +		    EGL_NONE
 +	    };
-+	eglimage_device_attributes m_deviceAttrib = {r.width(), r.height(), 2, 
-+						r.width()*r.height()*2, 
++	eglimage_device_attributes m_deviceAttrib = {windowWidth, windowHeight, 2, 
++						windowWidth*windowHeight*2, 
 +						PVRSRV_PIXEL_FORMAT_YUV420,
 +						0, //to be initialised
 +						eglAttributes, 1};
 +
-+
-+	if(!tiEglFsInitialised)
++	static int lastDeviceClass = 0;
++	if(!m_tiEglFsInitialised)
 +	{
 +		deviceClass = new TISGXStreamEGLIMAGEDevice();
 +		texClass = new TISGXStreamTexEGLIMAGE();
-+		paArray[0] = m_image.constBits();
-+		tempAttrib.egldisplay = eglGetCurrentDisplay();
-+		deviceClass->init(&deviceAttrib, 0, paArray);
++		paArray[0] = (unsigned long)m_image.constBits();
++		m_deviceAttrib.egldisplay = eglGetCurrentDisplay();
++		deviceClass->init(&m_deviceAttrib, lastDeviceClass, paArray);
 +		texClass->init(lastDeviceClass);
 +		texClass->load_v_shader(NULL);
 +		texClass->load_f_shader(NULL);
 +		texClass->load_program();
 +
-+		m_vertexCoordEntry = texClass->get_attribute_location("inVertex");
-+		m_textureCoordEntry = texClass->get_attribute_location("inTexCoord");
++		m_vertexCoordEntry = texClass->get_attrib_location("inVertex");
++		m_textureCoordEntry = texClass->get_attrib_location("inTexCoord");
 +		int matrixLocation = texClass->get_uniform_location("MVPMatrix");
 +		glUniformMatrix4fv( matrixLocation, 1, GL_FALSE, matrixVal);
 +
-+		tiEglFsInitialised = 1;
++		m_tiEglFsInitialised = 1;
 +	}
 +    texClass->use_program();
 +    glEnableVertexAttribArray(m_vertexCoordEntry);
@@ -99,3 +137,8 @@
      m_context->swapBuffers(window);
  
      m_context->doneCurrent();
+ }
+ 
+ void QEglFSBackingStore::makeCurrent()
+ {
+     // needed to prevent QOpenGLContext::makeCurrent() from failing
