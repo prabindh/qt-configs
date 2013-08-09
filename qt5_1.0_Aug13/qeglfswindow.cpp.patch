@@ -1,0 +1,56 @@
+--- src/plugins/platforms/eglfs/qeglfswindow.cpp.orig	2013-08-09 23:29:18.253037952 +0530
++++ src/plugins/platforms/eglfs/qeglfswindow.cpp	2013-08-09 23:41:18.509018405 +0530
+@@ -61,23 +61,32 @@ QEglFSWindow::QEglFSWindow(QWindow *w)
+ #endif
+ }
+ 
+ QEglFSWindow::~QEglFSWindow()
+ {
+     destroy();
+ }
+ 
++static EGLSurface __singleWindowSurface;
+ void QEglFSWindow::create()
+ {
+     if (m_window)
+         return;
+ 
+     setWindowState(Qt::WindowFullScreen);
+ 
++    if(QEglFSHooks::hooks() && !QEglFSHooks::hooks()->hasCapability(QPlatformIntegration::Capability::MultipleWindows) && __singleWindowSurface)
++    {
++        m_surface = __singleWindowSurface;
++#ifdef QEGL_EXTRA_DEBUG
++    qWarning("Surface recreate request, re-using %x\n", m_surface);
++#endif
++       return;
++    }
+     if (window()->type() == Qt::Desktop) {
+         QRect rect(QPoint(), QEglFSHooks::hooks()->screenSize());
+         QPlatformWindow::setGeometry(rect);
+         QWindowSystemInterface::handleGeometryChange(window(), rect);
+         return;
+     }
+ 
+     EGLDisplay display = (static_cast<QEglFSScreen *>(window()->screen()->handle()))->display();
+@@ -104,16 +113,20 @@ void QEglFSWindow::resetSurface()
+ 
+     m_window = QEglFSHooks::hooks()->createNativeWindow(QEglFSHooks::hooks()->screenSize(), m_format);
+     m_surface = eglCreateWindowSurface(display, m_config, m_window, NULL);
+     if (m_surface == EGL_NO_SURFACE) {
+         EGLint error = eglGetError();
+         eglTerminate(display);
+         qFatal("EGL Error : Could not create the egl surface: error = 0x%x\n", error);
+     }
++    if(QEglFSHooks::hooks() && !QEglFSHooks::hooks()->hasCapability(QPlatformIntegration::Capability::MultipleWindows))
++    {
++        __singleWindowSurface = m_surface;
++    }
+ }
+ 
+ void QEglFSWindow::destroy()
+ {
+     if (m_surface) {
+         EGLDisplay display = static_cast<QEglFSScreen *>(screen())->display();
+         eglDestroySurface(display, m_surface);
+         m_surface = 0;
