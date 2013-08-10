@@ -1,0 +1,7 @@
+Qt5.1.0 (Final) update (Aug 2013)
+
+- This set of updates allow Qt5.1.0 to be built using standard TI Sitara AMSDK 6.00, with Linarao toolchain and root filesystem (both hardfloat), and Graphics drivers provided by TI as part of AMSDK 6.00.
+
+- icu is not part of standard AMSDK filesystem hence Qtwebkit cannot be built. Since QtWebkit version has not changed since 5.0 first release, earlier releases can be looked at for analysis.
+
+
