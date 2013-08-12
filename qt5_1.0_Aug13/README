@@ -4,4 +4,4 @@ Qt5.1.0 (Final) update (Aug 2013)
 
 - icu is not part of standard AMSDK filesystem hence Qtwebkit cannot be built. Since QtWebkit version has not changed since 5.0 first release, earlier releases can be looked at for analysis.
 
-
+- Since /include folder from Graphics SDK is not present in the AMSDK rootfs, added include folder in this folder. This can be used to build Qt5
