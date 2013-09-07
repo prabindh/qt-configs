@@ -1,0 +1,20 @@
+--- Tools/qmake/mkspecs/features/features.prf.orig	2013-09-07 13:49:38.210836589 +0530
++++ Tools/qmake/mkspecs/features/features.prf	2013-09-07 13:50:13.574835036 +0530
+@@ -127,16 +127,17 @@ defineTest(detectFeatures) {
+     packagesExist(libudev): WEBKIT_CONFIG += gamepad
+ 
+     # Support for Graphics Surface
+     # GraphicsSurface requires GraphicsContext3D and hence use_3d_graphics
+     use?(3d_graphics) {
+         mac: WEBKIT_CONFIG += use_graphics_surface
+         win32:contains(QT_CONFIG, opengles2): WEBKIT_CONFIG += use_graphics_surface
+         linux-*:contains(WEBKIT_CONFIG, have_glx):contains(WEBKIT_CONFIG, have_xcomposite):contains(WEBKIT_CONFIG, have_xrender): WEBKIT_CONFIG += use_graphics_surface
++        linux-*:contains(QT_CONFIG, opengles2): WEBKIT_CONFIG += use_graphics_surface
+     }
+ 
+     # Slider Touch is sensible to use when compiling WebKit2
+     enable?(touch_events): WEBKIT_CONFIG += touch_slider
+ 
+ 
+     # Minibrowser must be able to query for QtTestSupport
+     build?(qttestsupport): WEBKIT_CONFIG += have_qttestsupport

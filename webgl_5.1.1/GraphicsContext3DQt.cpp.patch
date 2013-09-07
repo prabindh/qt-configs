@@ -1,0 +1,26 @@
+--- Source/WebCore/platform/graphics/qt/GraphicsContext3DQt.cpp.orig	2013-09-07 13:41:19.946858466 +0530
++++ Source/WebCore/platform/graphics/qt/GraphicsContext3DQt.cpp	2013-09-07 17:48:13.958979770 +0530
+@@ -383,21 +383,23 @@ GraphicsContext3D::GraphicsContext3D(Gra
+     , m_boundTexture0(0)
+     , m_multisampleFBO(0)
+     , m_multisampleDepthStencilBuffer(0)
+     , m_multisampleColorBuffer(0)
+     , m_private(adoptPtr(new GraphicsContext3DPrivate(this, hostWindow, renderStyle)))
+ {
+     validateAttributes();
+ 
++#if USE(GLX)
+     if (!m_private->m_surface || !m_private->m_platformContext) {
+         LOG_ERROR("GraphicsContext3D: GL context creation failed.");
+         m_private = nullptr;
+         return;
+     }
++#endif
+ 
+     static bool initialized = false;
+     static bool success = true;
+     if (!initialized) {
+         success = initializeOpenGLShims();
+         initialized = true;
+     }
+     if (!success) {
