@@ -1,0 +1,25 @@
+--- Source/WebCore/WebCore.pri.orig	2013-09-08 14:18:22.315635577 +0530
++++ Source/WebCore/WebCore.pri	2013-09-08 14:18:44.271634981 +0530
+@@ -213,18 +213,20 @@ use?(3D_GRAPHICS) {
+     } else {
+         contains(QT_CONFIG, opengles2): CONFIG += egl
+     }
+ }
+ 
+ use?(GRAPHICS_SURFACE) {
+     mac: LIBS += -framework IOSurface -framework CoreFoundation
+     linux-*: {
+-        LIBS += -lXcomposite -lXrender
+-        CONFIG *= x11
++        xlibAvailable() {
++            LIBS += -lXcomposite -lXrender
++            CONFIG *= x11
++	}
+     }
+ }
+ 
+ have?(sqlite3) {
+     mac {
+         LIBS += -lsqlite3
+     } else {
+         PKGCONFIG += sqlite3
