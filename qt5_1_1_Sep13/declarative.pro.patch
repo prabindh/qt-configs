@@ -1,0 +1,20 @@
+--- qtquick1/examples/declarative/declarative.pro	2013-08-25 23:35:08.000000000 +0530
++++ qtquick1/examples/declarative/declarative.pro.mod	2013-09-03 15:43:31.547733821 +0530
+@@ -11,17 +11,16 @@ SUBDIRS = \
+     keyinteraction/focus \
+     minehunt \
+     modelviews \
+     photoviewer \
+     positioners \
+     righttoleft \
+     rssnews \
+     samegame \
+-    shadereffects \
+     snake \
+     sqllocalstorage \
+     text \
+     threading \
+     touchinteraction \
+     toys \
+     tutorials \
+     twitter \

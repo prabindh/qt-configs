@@ -1,0 +1,34 @@
+--- qtbase/src/plugins/platforms/eglfs/qeglfswindow.cpp.old	2013-09-09 23:09:24.433774489 +0530
++++ qtbase/src/plugins/platforms/eglfs/qeglfswindow.cpp	2013-09-09 23:12:22.105766689 +0530
+@@ -54,30 +54,30 @@ QEglFSWindow::QEglFSWindow(QWindow *w)
+     , m_surface(0)
+     , m_window(0)
+ {
+     static int serialNo = 0;
+     m_winid  = ++serialNo;
+ #ifdef QEGL_EXTRA_DEBUG
+     qWarning("QEglWindow %p: %p 0x%x\n", this, w, uint(m_winid));
+ #endif
++    setWindowState(Qt::WindowFullScreen);
+ }
+ 
+ QEglFSWindow::~QEglFSWindow()
+ {
+     destroy();
+ }
+ 
+ static EGLSurface __singleWindowSurface;
+ void QEglFSWindow::create()
+ {
+     if (m_window)
+         return;
+ 
+-    setWindowState(Qt::WindowFullScreen);
+ 
+     if(QEglFSHooks::hooks() && !QEglFSHooks::hooks()->hasCapability(QPlatformIntegration::Capability::MultipleWindows) && __singleWindowSurface)
+     {
+         m_surface = __singleWindowSurface;
+ #ifdef QEGL_EXTRA_DEBUG
+     qWarning("Surface recreate request, re-using %x\n", m_surface);
+ #endif
+        return;

@@ -1,0 +1,20 @@
+--- qtbase/examples/widgets/widgets.pro	2013-09-03 15:36:05.811753396 +0530
++++ qtbase/examples/widgets/widgets.pro.mod	2013-09-03 15:46:12.303726764 +0530
+@@ -14,13 +14,15 @@ SUBDIRS       = \
+                 layouts \
+                 mainwindows \
+                 painting \
+                 richtext \
+                 scroller \
+                 statemachine \
+                 tools \
+                 tutorials \
+-                widgets \
+-                windowcontainer
++                widgets 
++contains(QT_CONFIG, opengl(es1|es2)?) {
++    SUBDIRS += windowcontainer 
++}
+ 
+ contains(DEFINES, QT_NO_CURSOR): SUBDIRS -= mainwindows
+ contains(DEFINES, QT_NO_DRAGANDDROP): SUBDIRS -= draganddrop
