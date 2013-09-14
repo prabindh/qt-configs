@@ -1,5 +1,5 @@
---- qttestbrowser.cpp.orig	2013-09-08 17:28:48.633593482 +0530
-+++ qttestbrowser.cpp	2013-09-08 17:29:07.713592964 +0530
+--- qtwebkit/Tools/QtTestBrowser/qttestbrowser.cpp.orig	2013-09-08 17:28:48.633593482 +0530
++++ qtwebkit/Tools/QtTestBrowser/qttestbrowser.cpp	2013-09-08 17:29:07.713592964 +0530
 @@ -235,19 +235,20 @@ void LauncherApplication::handleUserOpti
      }
  
